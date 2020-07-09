@@ -1,9 +1,10 @@
 #! /usr/bin/env python
 # $Id: setup.py,v 1.2 2002/01/08 07:13:21 jgg Exp $
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 from distutils.sysconfig import parse_makefile
-from DistUtilsExtra.command import *
+from distutils.sysconfig import parse_makefile
+#from DistUtilsExtra.command import *
 import glob, os, string
 
 # The apt_pkg module
