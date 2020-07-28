@@ -19,7 +19,7 @@ if sys.version_info[0] < 3:
 else:
     PYTHON_APT = 'python3-apt'
 ```
-    
+
 This comes from the **python-apt** package. However, those packages do not
 install in a Python virtualenv (2 nor 3). They were originally created to be
 installed in the sytem-level Python.
@@ -31,7 +31,7 @@ use the Ansible **apt** module to install on Debian style hosts when the
 ## Why Use a Virtualenv for Ansible?
 
 The question often comes up, *Why do this?* Isn't it easier to use the
-system-level Python? 
+system-level Python?
 
 It is true that this package was written by Ubuntu developers and is packaged
 as a Debian package. And, it was written to be used in Debian packages.
@@ -98,7 +98,7 @@ changed: [localhost]
 
 ### Second work-around: Write a custom/fork Ansible apt module
 
-One could write a custom Ansible **apt** module (e.g., **apt-new**). 
+One could write a custom Ansible **apt** module (e.g., **apt-new**).
 
 If the module avoided the imports and used subprocesses to execute commands,
 this could work well. This could be used to customize messages and behavior.
@@ -108,6 +108,12 @@ However, there are still drawbacks:
 * The original **apt** (e.g., instead of **apt-new**) tasks may creep back in and have to be maintained by Peer Review (automatic or human)
 * There may be a large code base and/or infrastructure in place where such a change is impractical
 * Naming this new module may be hard
+
+With that said, this appears to be the best approach to solving this problem,
+regardless. Work appears to be moving further on this point than on any other.
+It 'nips the core problem' in the bud:
+
+https://github.com/glenjarvis/ansible-simple-apt
 
 
 ## Can't you just install the python-apt package inside of the VirtualEnv?
@@ -126,19 +132,27 @@ When trying to do so, you may see an error similar to:
 See the **02_install_problem_demo** subdirectory in this repo for a full
 demonstration using **Vagrant**.
 
+See the **03_install_problem_workaround** for a demo of a workaround submited
+by Stefan Taranu. This work around does appear to solve the problem, but it may
+not be as easy to implement as one hopes.
+
 
 ## Is this released yet?
 
-Actually, no. **I NEED YOUR HELP**. 
+Actually, no.
 
 Most of the issues that I see here are simple enough - stale packaging (e.g.,
-using Distutils). I've been able to work around most issues. HOWEVER, I'm
-having difficulty with the extension compilation (**apt_inst** and
-**apt_pkg**).
+using Distutils). I've been able to work around most issues. HOWEVER, the core
+problem is that the Ansible task for apt uses a library that is out of date in
+PyPI and that the original authors said should never be used outside of Debian
+packages.
 
-Ideally, we modernize this enough to use **wheels** so we don't have to compile
-on installation. 
+The best "root cause" answer of my problem is to remove the need for the
+library in the Ansible apt package.
 
-**I'm stuck**
+ **I NEED YOUR HELP**.
 
-**Please help**
+See this repo for that progress:
+
+https://github.com/glenjarvis/ansible-simple-apt
+
